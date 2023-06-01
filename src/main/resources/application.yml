@@ -1,0 +1,59 @@
+person:
+  userName: "zhangsan \n 李四"
+  #单引号会将\n作为字符串输出     双引号会将\n 作为换行输出
+  #双引号不会转义，单引号会转义
+  boss: true
+  birth: 2019/12/09
+  age: 18
+#数组表示法一
+#  interests: [basketball,soccer,run]
+#数组表示法二
+  interests:
+    - 篮球
+    - 足球
+  animal: [猫,狗]
+#  score:
+#    english: 90
+#    math: 89
+  score: {english:80,math:90}
+  salary:
+    - 9999.98
+    - 9999.99
+#对象表示法一
+  pet:
+    name: 阿狗
+    weight: 99.99
+#对象表示法二
+#  pet: {name: 阿狗,weight: 99.99}
+  allPets:
+    sick:
+      - {name: 阿狗,weight: 99.99}
+      - name: 阿猫
+        weight: 88.88
+      - name: 阿虫
+        weight: 77.77
+    health:
+      - { name: 阿花,weight: 12.99 }
+      - { name: 阿明,weight: 19.99 }
+
+#spring:
+#  banner:
+#    image:
+#      location:
+#        image:
+#          bitdepth: 4
+#  cache:
+#    type: redis
+#    redis:
+#      time-to-live: 11000
+
+#程序会优先执行动态指令，然后将所有找不到对应方法的发送至静态指令集，其中就包括各个静态源文件夹的名称
+#程序会拦截所有指令，所以为了将动态与静态区分开来，静态路径要带有一个前缀而非直接/**
+spring:
+  mvc:
+    static-path-pattern: /res/**
+#指定静态文件夹
+  web:
+    resources:
+      static-locations: classpath:/static/
+
