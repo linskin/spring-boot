@@ -67,3 +67,30 @@ public class WebMvcAutoConfiguration {}
                  });
              }
          }
+
+protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        HttpServletRequest requestToUse = request;
+        //当method为post时doFileterInternal才会生效，这也是为什么在使用自定方法时要“表单method=post，隐藏域_method=put”
+        if ("POST".equals(request.getMethod()) && request.getAttribute("javax.servlet.error.exception") == null) {
+            String paramValue = request.getParameter(this.methodParam);
+            if (StringUtils.hasLength(paramValue)) {
+                String method = paramValue.toUpperCase(Locale.ENGLISH);
+                if (ALLOWED_METHODS.contains(method)) {
+                    requestToUse = new HttpMethodRequestWrapper(request, method);
+                }
+            }
+        }
+
+        filterChain.doFilter((ServletRequest)requestToUse, response);
+    }
+
+//在springboot中hiddenmethod相关的自动配置默认是false，所以要手动开启
+@Bean
+    @ConditionalOnMissingBean({HiddenHttpMethodFilter.class})
+    @ConditionalOnProperty(
+        prefix = "spring.mvc.hiddenmethod.filter",
+        name = {"enabled"}
+    )
+    public OrderedHiddenHttpMethodFilter hiddenHttpMethodFilter() {
+        return new OrderedHiddenHttpMethodFilter();
+    }

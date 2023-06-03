@@ -51,9 +51,13 @@ person:
 #程序会拦截所有指令，所以为了将动态与静态区分开来，静态路径要带有一个前缀而非直接/**
 spring:
   mvc:
-    static-path-pattern: /res/**
-    #    配置指令访问前缀默认为/**
-#指定静态文件夹
+#    static-path-pattern: /res/**
+#    #    配置指令访问前缀默认为/res/
+    hiddenmethod:
+      filter:
+        enabled: true
+        #开启隐藏方法类的配置打开，以使我们的自定方法可用
+  #指定静态文件夹
 #默认静态文件夹：public、resources、static、template、META-INF.resources
   web:
     resources:

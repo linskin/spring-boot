@@ -7,7 +7,36 @@
 <body>
 <h1>我是卡卡龙，疯狂星期四vivo五十，我带你拯救世界！！！</h1>
 <picture>
-    <img src="vr.jpg"width="600"alt="图片飞到外太空啦！"title="雷霆半月斩！！！">
+    <img src="v2.jpg"height="200"alt="图片飞到外太空啦！"title="雷霆半月斩！！！">
+<!--    <img src="v2.jpg"width="200"alt="图片飞到外太空啦！"title="雷霆半月斩！！！">-->
+    <img src="v3.png"height="200"alt="图片飞到外太空啦！"title="雷霆半月斩！！！">
+    <img src=""alt="图片飞到外太空啦！"title="雷霆半月斩！！！">
 </picture>
+<form action="/user" method="get">
+    <input value="REST-GET 提交" type="submit"/>
+</form>
+<form action="/user" method="post">
+    <input value="REST-POST 提交" type="submit"/>
+</form>
+<!--如果直接将非get或者post的method方法放入，该方法将会无法正常启用-->
+<!--<form action="/user" method="delete">-->
+<!--    <input value="REST-DELETE 提交" type="submit"/>-->
+<!--</form>-->
+<!--正确的用法应该是将表单内的method置为post，然后再将实际method名添加进去（如下），
+一般将其隐藏使用（hidden），另外name要置为"_method"-->
+<!--<form action="/user" method="delete">-->
+<!--    <input name="_method" type="hidden" value="DELETE"/>-->
+<!--    <input value="REST-DELETE 提交" type="submit"/>-->
+<!--</form>-->
+<!--但这样依旧是不能生效的，是因为在springboot中相关的自动配置默认是false，所以要手动开启-->
+<form action="/user" method="post">
+    <input name="_method" type="hidden" value="DELETE"/>
+    <input value="REST-DELETE 提交" type="submit"/>
+</form>
+<form action="/user" method="post">
+    <input name="_method" type="hidden" value="PUT"/>
+    <input value="REST-PUT 提交" type="submit"/>
+</form>
+
 </body>
 </html>
