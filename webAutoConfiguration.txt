@@ -1,0 +1,69 @@
+AutoConfiguration(
+    after = {DispatcherServletAutoConfiguration.class, TaskExecutionAutoConfiguration.class, ValidationAutoConfiguration.class}
+)
+@ConditionalOnWebApplication(
+    type = Type.SERVLET
+)
+@ConditionalOnClass({Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class})
+@ConditionalOnMissingBean({WebMvcConfigurationSupport.class})
+@AutoConfigureOrder(-2147483638)
+public class WebMvcAutoConfiguration {}
+
+
+
+ @Configuration(
+        proxyBeanMethods = false
+    )
+    @Import({EnableWebMvcConfiguration.class})
+    @EnableConfigurationProperties({WebMvcProperties.class, WebProperties.class})
+    @Order(0)
+    public static class WebMvcAutoConfigurationAdapter implements WebMvcConfigurer, ServletContextAware {}
+
+
+
+//用于兼容Rest,与put、delete请求有关
+    public OrderedHiddenHttpMethodFilter hiddenHttpMethodFilter() {
+        return new OrderedHiddenHttpMethodFilter();
+    }
+    
+//有参构造器所有参数的值都会从容器中确定
+//ResourceProperties resourceProperties：获取和spring.resource绑定的所有值的对象
+//WebMvcProperties mvcProperties 获取和spring.mvc绑定的所有的值的对象
+//ListableBeanFactory beanFactory Spring的beanFactory
+//HttpMessageConverters 找到所有的HttpMessageConverters
+//ResourceHandleRegistrationCustomizer 找到资源处理器的自定义器
+//
+ public WebMvcAutoConfigurationAdapter(WebProperties webProperties, WebMvcProperties mvcProperties,
+                                       ListableBeanFactory beanFactory,
+                                       ObjectProvider<HttpMessageConverters> messageConvertersProvider,
+                                       ObjectProvider<ResourceHandlerRegistrationCustomizer> resourceHandlerRegistrationCustomizerProvider,
+                                        ObjectProvider<DispatcherServletPath> dispatcherServletPath,
+                                         ObjectProvider<ServletRegistrationBean<?>> servletRegistrations) {
+            this.resourceProperties = webProperties.getResources();
+            this.mvcProperties = mvcProperties;
+            this.beanFactory = beanFactory;
+            this.messageConvertersProvider = messageConvertersProvider;
+            this.resourceHandlerRegistrationCustomizer = (ResourceHandlerRegistrationCustomizer)resourceHandlerRegistrationCustomizerProvider.getIfAvailable();
+            this.dispatcherServletPath = dispatcherServletPath;
+            this.servletRegistrations = servletRegistrations;
+            this.mvcProperties.checkConfiguration();
+        }
+
+ //资源处理的默认规则
+ @Override
+ public void addResourceHandlers(ResourceHandlerRegistry registry) {
+             if (!this.resourceProperties.isAddMappings()) {
+                 logger.debug("Default resource handling disabled");
+             } else {
+                 this.addResourceHandler(registry, "/webjars/**", "classpath:/META-INF/resources/webjars/");
+                 this.addResourceHandler(registry, this.mvcProperties.getStaticPathPattern(), (registration) -> {
+                     registration.addResourceLocations(this.resourceProperties.getStaticLocations());
+                 //webjars的规则
+                     if (this.servletContext != null) {
+                         ServletContextResource resource = new ServletContextResource(this.servletContext, "/");
+                         registration.addResourceLocations(new Resource[]{resource});
+                     }
+
+                 });
+             }
+         }

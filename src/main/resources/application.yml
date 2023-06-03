@@ -52,17 +52,23 @@ person:
 spring:
   mvc:
     static-path-pattern: /res/**
+    #    配置指令访问前缀默认为/**
 #指定静态文件夹
 #默认静态文件夹：public、resources、static、template、META-INF.resources
   web:
     resources:
       static-locations: classpath:/static/
-#      static-locations: [classpath:/static/] 同类方法
-#指定终端加载时的log
+      #      static-locations: [classpath:/static/] 同类方法
+      add-mappings: true
+      #      false则禁用静态路径，反之启用
+      cache:
+        period: 11000
+      #      配置静态文件缓存时间
+  #指定终端加载时的log
   banner:
     image:
       location:
         classpath: banner.txt
-#指定服务器端口
-#server:
-#  port: 8888
+  #指定服务器端口
+  #server:
+  #  port: 8888
